@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { ToDo } from '../../models/todo.model'
+import { ToDo, Column } from '../../models/todo.model'
 
 @Component({
   selector: 'app-board',
@@ -21,33 +21,44 @@ import { ToDo } from '../../models/todo.model'
 })
 export class BoardComponent implements OnInit {
 
-  todos: ToDo[] = [
+  columns: Column[] = [
     {
-      id: '1',
-      title: 'wash dishes'
+      title: 'ToDo',
+      todos: [
+        {
+          id: '1',
+          title: 'Make dishes'
+        },
+        {
+          id: '2',
+          title: 'buy bread'
+        }
+      ]
     },
     {
-      id: '2',
-      title: 'go gym'
+      title: 'Doing',
+      todos: [
+        {
+          id: '3',
+          title: 'Watch Angular Path in Platzi'
+        }
+      ]
     },
     {
-      id: '3',
-      title: 'play video games'
-    },
-  ];
+      title: 'Done',
+      todos: [
+        {
+          id: '4',
+          title: 'play COD'
+        }
+      ]
+    }
 
-  doing: ToDo[] = [
-    {
-      id: '3',
-      title: 'Watch Angular Path in Platzi'
-    }
-  ];
-  done: ToDo[] = [
-    {
-      id: '4',
-      title: 'play COD'
-    }
-  ];
+  ]
+
+  todos: ToDo[] = [];
+  doing: ToDo[] = [];
+  done:  ToDo[] = [];
 
   constructor() { }
 
@@ -58,6 +69,27 @@ export class BoardComponent implements OnInit {
     // console.log(event);
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    } else {
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      )
+    }
+  }
+
+  addColumn() {
+    this.columns.push({
+      title: 'New Column',
+      todos: [],
+    });
+  }
+
+  dropColumn(event: CdkDragDrop<any[]>) {
+    console.log(event);
+    if (event.previousContainer === event.container) {
+      moveItemInArray(this.columns, event.previousIndex, event.currentIndex);
     } else {
       transferArrayItem(
         event.previousContainer.data,
