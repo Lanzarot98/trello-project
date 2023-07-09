@@ -6,12 +6,14 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export class DataSourceProduct extends DataSource<Product> {
 
   data = new BehaviorSubject<Product[]>([]);
+  originalData: Product[] = [];
 
   connect(): Observable<Product[]> {
     return this.data;
   }
 
   init(products: Product[]) {
+    this.originalData = products;
     this.data.next(products);
   }
 
@@ -32,6 +34,13 @@ export class DataSourceProduct extends DataSource<Product> {
       }
       this.data.next(products); // transmitir ese cambio a traves del observable
     }
+  }
+
+  find(query: string) {
+    // const products = this.data.getValue(); // no mutar, pues se estaría buscando a partir del filtro y se debe buscar a partir del array completo de datos
+
+    const newProducts = this.originalData.filter( item => item.title.toLowerCase().includes( query.toLowerCase() ) );
+    this.data.next(newProducts);
   }
 
   disconnect() {  }
