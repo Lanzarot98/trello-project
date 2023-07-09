@@ -39,7 +39,12 @@ export class DataSourceProduct extends DataSource<Product> {
   find(query: string) {
     // const products = this.data.getValue(); // no mutar, pues se estaría buscando a partir del filtro y se debe buscar a partir del array completo de datos
 
-    const newProducts = this.originalData.filter( item => item.title.toLowerCase().includes( query.toLowerCase() ) );
+    const newProducts = this.originalData
+      .filter( item => {
+        const word = `${item.id}-${item.title}-${item.price}`;
+        return word.toLowerCase().includes(query.toLowerCase())
+        // item.title.toLowerCase().includes( query.toLowerCase() )
+      } );
     this.data.next(newProducts);
   }
 
